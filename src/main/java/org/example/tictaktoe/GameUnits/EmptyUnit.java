@@ -10,4 +10,14 @@ public class EmptyUnit extends GameUnit {
 
     }
 
+    @Override
+    protected void deleteOldCanvas(Pane pane){
+
+    }
+
+    @Override
+    public void resize(double sizeX, double sizeY) {
+
+    }
+
 }

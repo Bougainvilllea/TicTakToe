@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
+    private AppController controller;
+
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("field.fxml"));

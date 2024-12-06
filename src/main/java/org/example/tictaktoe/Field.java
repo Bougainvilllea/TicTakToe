@@ -14,58 +14,44 @@ import java.util.List;
 
 public class Field {
     private final List<GameUnit> fieldCells = new ArrayList<>();
-    private HashMap<Integer, List<Double>> cellsCoordinates = new HashMap<>();
+    private final HashMap<Integer, List<Double>> cellsCoordinates = new HashMap<>();
     private final Pane fieldPane;
-    private final Canvas canvas;
     private final Color bordersColor;
     private final Color backGroundColor;
-    private final double borderThickness;
-    public double width;
-    public double height;
+
+    private double borderThickness;
+    private double borderThicknessProportion;
     private double x;
     private double y;
     private double smallestSize;
-    private double biggestSize;
+    private Canvas canvas = null;
+    private double cellSize;
+
+    public double width;
+    public double height;
+
+
 
 
 
     public Field(Pane fieldPane, Color bordersColor, Color backGroundColor, double borderThickness){
+
         for(int i = 0; i < 9; i++){
             fieldCells.add(new EmptyUnit());
         }
 
         this.fieldPane = fieldPane;
-
         updateSizes();
 
-        this.width = smallestSize;
-        this.height = smallestSize;
-
-        this.x = (getPaneWidth() - smallestSize) / 2;
-        this.y = (getPaneHeight() - smallestSize) / 2;
-
-
         this.canvas = new Canvas(getPaneWidth(), getPaneHeight());
-        fieldPane.getChildren().add(canvas);
-
         this.backGroundColor = backGroundColor;
         this.bordersColor = bordersColor;
-
         this.borderThickness = borderThickness;
+        this.borderThicknessProportion = borderThickness / width;
 
-        double cellWidthHeight = width / 3 - borderThickness;
+        fieldPane.getChildren().add(canvas);
 
-        int count = 0;
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
-                cellsCoordinates.put(count, List.of(x + (cellWidthHeight + borderThickness) * i + borderThickness/2,
-                        y + (cellWidthHeight + borderThickness) * j + borderThickness/2));
-                count++;
-            }
-        }
-        for (int i = 0; i < 9; i++){
-            System.out.println(cellsCoordinates.get(i));
-        }
+        updateField();
     }
 
     private Integer coordinatesToNum(int x, int y){
@@ -81,11 +67,62 @@ public class Field {
     }
 
     public void updateField(){
+        updateSizes();
+        updatePos();
+        updateCoordinatesCells();
+        clearCanvas();
+        drawBoard();
+        drawUnits();
+    }
 
+    private void updateCoordinatesCells(){
+
+        int count = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                cellsCoordinates.put(count, List.of(x + (cellSize + borderThickness) * i + borderThickness/2,
+                        y + (cellSize + borderThickness) * j + borderThickness/2));
+                count++;
+            }
+        }
+    }
+
+    private void clearCanvas(){
+        if(this.canvas != null){
+            fieldPane.getChildren().remove(canvas);
+            canvas = new Canvas(getPaneWidth(), getPaneHeight());
+            fieldPane.getChildren().add(canvas);
+
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, getPaneWidth(), getPaneHeight());
+        }
+
+    }
+
+    private void updatePos(){
+        this.x = (getPaneWidth() - smallestSize) / 2;
+        this.y = (getPaneHeight() - smallestSize) / 2;
+    }
+
+    private void updateSizes(){
+        if(getPaneWidth() >= getPaneHeight()){
+            smallestSize = getPaneHeight();
+        }
+        else{
+            smallestSize = getPaneWidth();
+        }
+        this.width = smallestSize;
+        this.height = smallestSize;
+
+        borderThickness = width * borderThicknessProportion;
+        cellSize = width / 3 - borderThickness;
+
+    }
+
+    private void drawBoard(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(backGroundColor);
         gc.fillRect(x, y, width, height);
-
         gc.setFill(bordersColor);
 
         for (int i = 0; i <= 3; i++){
@@ -95,14 +132,18 @@ public class Field {
         for (int i = 0; i <= 3; i++){
             gc.fillRect(x, y + (height / 3) * i - borderThickness / 2, width, borderThickness);
         }
+    }
 
+    private void drawUnits(){
         for (int i = 0; i < 9; i++) {
             List<Double> coordinatesOnPane = cellsCoordinates.get(i);
+            fittingUnits(fieldCells.get(i));
             fieldCells.get(i).render(coordinatesOnPane.getFirst(), coordinatesOnPane.getLast(), fieldPane);
         }
+    }
 
-
-
+    private void fittingUnits(GameUnit unit){
+        unit.resize(cellSize, cellSize);
     }
 
     private double getPaneWidth(){
@@ -125,18 +166,6 @@ public class Field {
         return tmpHeight;
     }
 
-
-    private void updateSizes(){
-        if(getPaneWidth() >= getPaneHeight()){
-            smallestSize = getPaneHeight();
-            biggestSize = getPaneWidth();
-        }
-        else{
-            smallestSize = getPaneWidth();
-            biggestSize = getPaneHeight();
-        }
-
-    }
 
     public Color getBackGroundColor(){
         return backGroundColor;
