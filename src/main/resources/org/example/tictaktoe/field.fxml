@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-
-<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.tictaktoe.AppController">
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="425.0" minWidth="650.0" prefHeight="425.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.tictaktoe.GameController">
    <children>
       <BorderPane fx:id="bottomPane" layoutY="356.0" prefHeight="151.0" prefWidth="1000.0" AnchorPane.bottomAnchor="-7.0" />
       <Pane fx:id="fieldPane" layoutX="-6.0" layoutY="-7.0" prefHeight="362.0" prefWidth="1014.0" />

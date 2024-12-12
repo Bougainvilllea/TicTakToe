@@ -7,15 +7,24 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private AppController controller;
+    private MenuController menuController;
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("field.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setScene(scene);
+
+        FXMLLoader menuLoad = new FXMLLoader(getClass().getResource("menu.fxml"));
+        Scene menu = new Scene(menuLoad.load());
+
+        menuController = menuLoad.getController();
+        menuController.setStage(stage);
+
+
         stage.setTitle("TicTakToe");
+        stage.setScene(menu);
+        stage.setMinWidth(650);
+        stage.setMinHeight(425);
         stage.show();
+
     }
 
     public static void main(String[] args) {launch(args);}

@@ -31,9 +31,6 @@ public class Field {
     public double height;
 
 
-
-
-
     public Field(Pane fieldPane, Color bordersColor, Color backGroundColor, double borderThickness){
 
         for(int i = 0; i < 9; i++){
@@ -54,18 +51,6 @@ public class Field {
         updateField();
     }
 
-    private Integer coordinatesToNum(int x, int y){
-        return (y - 1) * 3 + x - 1;
-    }
-
-    public void insertGameUnit(int x, int y, GameUnit unit) {
-        if(fieldCells.get(coordinatesToNum(x, y)).getClass() == EmptyUnit.class){
-            fieldCells.set(coordinatesToNum(x, y), unit);
-        }
-
-        //седлать исключение, когда пытаеся поставить юнита в занятую клетку
-    }
-
     public void updateField(){
         updateSizes();
         updatePos();
@@ -75,16 +60,95 @@ public class Field {
         drawUnits();
     }
 
-    private void updateCoordinatesCells(){
+    public Integer getNumCellContained(double x, double y){
 
+        for(int i = 0; i < 9; i++){
+            List<Double> cellXY = cellsCoordinates.get(i);
+            if((x >= cellXY.getFirst() && x <= cellXY.getFirst() + cellSize) && (y >= cellXY.getLast() && y <= cellXY.getLast() + cellSize)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    public void resize(double w, double h){
+        fieldPane.resize(w, h);
+    }
+
+    public Color getBackGroundColor(){
+        return backGroundColor;
+    }
+
+    public void insertGameUnit(int cellNum, GameUnit unit) {
+        if (cellNum < 0 || cellNum >= 9) {
+            return;
+        }
+        if(fieldCells.get(cellNum).getClass() == EmptyUnit.class){
+            fieldCells.set(cellNum, unit);
+            System.out.println("1");
+        }
+
+        //седлать исключение, когда пытаются поставить юнита в занятую клетку
+        //седлать исключение, когда пытаются поставить юнита в несуществующ. клетку
+    }
+
+    public Class getWinningTeam(){
+        for(int i = 1; i < 3; i++){
+
+//            horizontal
+            if(fieldCells.get(coordinatesToNum(1, i)).getClass() != EmptyUnit.class){
+                if((fieldCells.get(coordinatesToNum(1, i)).getClass() == fieldCells.get(coordinatesToNum(2, i)).getClass())
+                        && fieldCells.get(coordinatesToNum(3, i)).getClass() == fieldCells.get(coordinatesToNum(1, i)).getClass()){
+                    return fieldCells.get(coordinatesToNum(1, i)).getClass();
+                }
+            }
+
+//            vertical
+            if (fieldCells.get(coordinatesToNum(i, 1)).getClass() != EmptyUnit.class){
+                if((fieldCells.get(coordinatesToNum(i, 1)).getClass() == fieldCells.get(coordinatesToNum(i, 2)).getClass())
+                        && fieldCells.get(coordinatesToNum(i, 3)).getClass() == fieldCells.get(coordinatesToNum(i, 1)).getClass()){
+                    return fieldCells.get(coordinatesToNum(i, 1)).getClass();
+                }
+            }
+        }
+
+        //              diagonal
+        if (fieldCells.get(coordinatesToNum(1, 1)).getClass() != EmptyUnit.class){
+
+            if((fieldCells.get(coordinatesToNum(1, 1)).getClass() == fieldCells.get(coordinatesToNum(2, 2)).getClass())
+                    && fieldCells.get(coordinatesToNum(3, 3)).getClass() == fieldCells.get(coordinatesToNum(1, 1)).getClass()){
+                return fieldCells.get(coordinatesToNum(1, 1)).getClass();
+            }
+
+        }
+
+        //              diagonal2
+        if (fieldCells.get(coordinatesToNum(3, 1)).getClass() != EmptyUnit.class){
+
+            if((fieldCells.get(coordinatesToNum(3, 1)).getClass() == fieldCells.get(coordinatesToNum(2, 2)).getClass())
+                    && fieldCells.get(coordinatesToNum(1, 3)).getClass() == fieldCells.get(coordinatesToNum(3, 1)).getClass()){
+                return fieldCells.get(coordinatesToNum(3, 1)).getClass();
+            }
+
+        }
+
+        return EmptyUnit.class;
+    }
+
+    private void updateCoordinatesCells(){
         int count = 0;
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-                cellsCoordinates.put(count, List.of(x + (cellSize + borderThickness) * i + borderThickness/2,
-                        y + (cellSize + borderThickness) * j + borderThickness/2));
+                cellsCoordinates.put(count, List.of(x + (cellSize + borderThickness) * j + borderThickness/2,
+                        y + (cellSize + borderThickness) * i + borderThickness/2));
                 count++;
             }
         }
+    }
+
+    private Integer coordinatesToNum(int x, int y){
+        return (y - 1) * 3 + x - 1;
     }
 
     private void clearCanvas(){
@@ -167,8 +231,5 @@ public class Field {
     }
 
 
-    public Color getBackGroundColor(){
-        return backGroundColor;
-    }
 
 }
