@@ -5,15 +5,31 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class Zero extends GameUnit{
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+
+public class Zero extends GameUnit implements Serializable {
     private final Color backGroundColor;
     private Canvas canvas;
 
     public Zero(Color color, double sizeX, double sizeY, double thickness, Color backgroundColor) {
         super(color, sizeY, sizeX, thickness);
         this.backGroundColor = backgroundColor;
-        this.thickness = (thickness / 100) * 2;
-        System.out.println(this.thickness);
+        this.thickness = thickness;
+        this.name = "zero";
+    }
+
+    @Override
+    public HashMap<String, Object> toHashMap(int cellNumToInsert) {
+        HashMap<String, Object> tmp =  new HashMap<String, Object>();
+        tmp.put("color", List.of(color.getRed(), color.getGreen(), color.getBlue()));
+        tmp.put("backGroundColor", List.of(backGroundColor.getRed(), backGroundColor.getGreen(), backGroundColor.getBlue()));
+        tmp.put("unitClass", "zero");
+        tmp.put("cellNumToInsert", cellNumToInsert);
+        tmp.put("thickness", thickness);
+
+        return tmp;
     }
 
     @Override

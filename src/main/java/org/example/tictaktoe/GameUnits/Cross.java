@@ -2,19 +2,33 @@ package org.example.tictaktoe.GameUnits;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class Cross extends GameUnit{
+public class Cross extends GameUnit implements Serializable {
     private final List<Canvas> canvasList;
 
     public Cross(Color color, int sizeX, int sizeY, double thickness) {
         super(color, sizeY, sizeX, thickness);
         canvasList = new ArrayList<>();
+        this.name = "cross";
+
+    }
+
+    @Override
+    public HashMap<String, Object> toHashMap(int cellNumToInsert) {
+        HashMap<String, Object> tmp =  new HashMap<String, Object>();
+        tmp.put("color", List.of(color.getRed(), color.getGreen(), color.getBlue()));
+        tmp.put("unitClass", "cross");
+        tmp.put("cellNumToInsert", cellNumToInsert);
+        tmp.put("thickness", thickness);
+
+        return tmp;
     }
 
     @Override

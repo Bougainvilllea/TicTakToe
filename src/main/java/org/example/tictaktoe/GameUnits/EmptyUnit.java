@@ -4,7 +4,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class EmptyUnit extends GameUnit {
+import java.io.Serializable;
+import java.util.HashMap;
+
+public class EmptyUnit extends GameUnit implements Serializable {
+
+    public EmptyUnit(){
+        this.name = "gameUnit";
+    }
+
+    @Override
+    public HashMap<String, Object> toHashMap(int cellNumToInsert) {
+        HashMap<String, Object> tmp =  new HashMap<String, Object>();
+        tmp.put("unitClass", "emptyUnit");
+        tmp.put("cellNumToInsert", cellNumToInsert);
+        return tmp;
+    }
+
     @Override
     public void render(double x, double y, Pane pane) {
 

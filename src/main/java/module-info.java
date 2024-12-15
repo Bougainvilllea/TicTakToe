@@ -15,4 +15,6 @@ module org.example.tictaktoe {
     exports org.example.tictaktoe;
     exports org.example.tictaktoe.GameUnits;
     opens org.example.tictaktoe.GameUnits to javafx.fxml;
+    exports org.example.tictaktoe.Internet;
+    opens org.example.tictaktoe.Internet to javafx.fxml;
 }

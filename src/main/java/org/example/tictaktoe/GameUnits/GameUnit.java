@@ -6,13 +6,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.example.tictaktoe.Field;
 
-public abstract class GameUnit {
+import java.io.Serializable;
+import java.util.HashMap;
+
+public abstract class GameUnit implements Serializable {
     protected Field field;
     protected double sizeX;
     protected double sizeY;
     protected double thickness;
     protected Color color;
     protected Canvas canvas;
+    public String name;
 
     public GameUnit() {
 
@@ -24,8 +28,10 @@ public abstract class GameUnit {
         this.sizeY = sizeY;
         this.thickness = thickness;
         this.canvas = new Canvas(sizeX, sizeY);
+        this.name = "gameUnit";
     }
 
+    public abstract HashMap<String, Object> toHashMap(int cellNumToInsert);
     public abstract void render(double x, double y, Pane pane);
     protected abstract void deleteOldCanvas(Pane pane);
     public abstract void resize(double sizeX, double sizeY);

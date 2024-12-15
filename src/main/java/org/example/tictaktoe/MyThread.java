@@ -14,7 +14,6 @@ public class MyThread extends Thread {
         preInit = new Runnable() {
             @Override
             public void run() {
-
             }
         };
     }
@@ -35,7 +34,7 @@ public class MyThread extends Thread {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            Platform.runLater(loopedRunnable);
+            loopedRunnable.run();
         }
     }
 }

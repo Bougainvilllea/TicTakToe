@@ -86,21 +86,20 @@ public class Field {
         }
         if(fieldCells.get(cellNum).getClass() == EmptyUnit.class){
             fieldCells.set(cellNum, unit);
-            System.out.println("1");
         }
 
         //седлать исключение, когда пытаются поставить юнита в занятую клетку
         //седлать исключение, когда пытаются поставить юнита в несуществующ. клетку
     }
 
-    public Class getWinningTeam(){
+    public String getWinningTeam(){
         for(int i = 1; i < 3; i++){
 
 //            horizontal
             if(fieldCells.get(coordinatesToNum(1, i)).getClass() != EmptyUnit.class){
                 if((fieldCells.get(coordinatesToNum(1, i)).getClass() == fieldCells.get(coordinatesToNum(2, i)).getClass())
                         && fieldCells.get(coordinatesToNum(3, i)).getClass() == fieldCells.get(coordinatesToNum(1, i)).getClass()){
-                    return fieldCells.get(coordinatesToNum(1, i)).getClass();
+                    return fieldCells.get(coordinatesToNum(1, i)).name;
                 }
             }
 
@@ -108,7 +107,7 @@ public class Field {
             if (fieldCells.get(coordinatesToNum(i, 1)).getClass() != EmptyUnit.class){
                 if((fieldCells.get(coordinatesToNum(i, 1)).getClass() == fieldCells.get(coordinatesToNum(i, 2)).getClass())
                         && fieldCells.get(coordinatesToNum(i, 3)).getClass() == fieldCells.get(coordinatesToNum(i, 1)).getClass()){
-                    return fieldCells.get(coordinatesToNum(i, 1)).getClass();
+                    return fieldCells.get(coordinatesToNum(i, 1)).name;
                 }
             }
         }
@@ -118,7 +117,7 @@ public class Field {
 
             if((fieldCells.get(coordinatesToNum(1, 1)).getClass() == fieldCells.get(coordinatesToNum(2, 2)).getClass())
                     && fieldCells.get(coordinatesToNum(3, 3)).getClass() == fieldCells.get(coordinatesToNum(1, 1)).getClass()){
-                return fieldCells.get(coordinatesToNum(1, 1)).getClass();
+                return fieldCells.get(coordinatesToNum(1, 1)).name;
             }
 
         }
@@ -128,12 +127,22 @@ public class Field {
 
             if((fieldCells.get(coordinatesToNum(3, 1)).getClass() == fieldCells.get(coordinatesToNum(2, 2)).getClass())
                     && fieldCells.get(coordinatesToNum(1, 3)).getClass() == fieldCells.get(coordinatesToNum(3, 1)).getClass()){
-                return fieldCells.get(coordinatesToNum(3, 1)).getClass();
+                return fieldCells.get(coordinatesToNum(3, 1)).name;
             }
 
         }
 
-        return EmptyUnit.class;
+        boolean allCellsOccupied = true;
+        for(int i = 0; i < 9; i++){
+            if(fieldCells.get(i).getClass() == EmptyUnit.class){
+                allCellsOccupied = false;
+            }
+        }
+        if (allCellsOccupied){
+            return "draw";
+        }
+
+        return "game in progress";
     }
 
     private void updateCoordinatesCells(){

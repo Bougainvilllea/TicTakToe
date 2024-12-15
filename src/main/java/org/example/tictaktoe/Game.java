@@ -1,8 +1,6 @@
 package org.example.tictaktoe;
 
 import javafx.application.Platform;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -10,54 +8,65 @@ import org.example.tictaktoe.GameUnits.Cross;
 import org.example.tictaktoe.GameUnits.EmptyUnit;
 import org.example.tictaktoe.GameUnits.GameUnit;
 import org.example.tictaktoe.GameUnits.Zero;
+import org.example.tictaktoe.Internet.Update;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Game {
     private Thread gameThread;
     private final AnchorPane mainPane;
-    private final Field field;
     private String team;
     private boolean yourTurn;
-    public List<Update> updateQueue;
+    public final Field field;
+    public BlockingQueue<Update> updateQueue;
 
     public Game(AnchorPane mainPane, Pane fieldPane, String team){
         this.mainPane = mainPane;
         this.team = team;
         field = new Field(fieldPane, Color.BLACK, Color.BISQUE, 20);
         yourTurn = false;
+        updateQueue = new LinkedBlockingQueue<>();
     }
 
     public void start(){
         initGameThread(60);
     }
 
-    private GameUnit getUnitTeam(){
+    private GameUnit getUnitByTeam(){
         if(Objects.equals(team, "cross")){
-            return new Cross(Color.RED, 100, 100, 20);
+            return new Cross(Color.color(1, 0, 0), 100, 100, 20);
         }
+
         else if(Objects.equals(team, "zero")){
-            return new Zero(Color.BLUE, 100, 100, 20, field.getBackGroundColor());
+            return new Zero(Color.color(0, 0, 1), 100, 100, (20.0 / 100.0) * 2, field.getBackGroundColor());
         }
+
         return null;
     }
 
     public void clickOn(double x, double y){
         int cellNumToInsert = field.getNumCellContained(x, y);
-
+        System.out.println(yourTurn);
         if(cellNumToInsert != -1 && yourTurn){
-            field.insertGameUnit(cellNumToInsert, getUnitTeam());
+            GameUnit unit = getUnitByTeam();
+            field.insertGameUnit(cellNumToInsert, unit);
+
+            assert unit != null;
+            updateQueue.add(new Update(unit.toHashMap(cellNumToInsert), "insert unit"));
+            yourTurn = false;
         }
     }
-    private void endGame(){
-        System.out.println("Ending game");
+    private void endGame(String winner){
+        System.out.println("Ending game: " + winner);
     }
 
     private void endGameIfSomebodyWin(){
-        Class winner = field.getWinningTeam();
-        if (winner != EmptyUnit.class){
-            endGame();
+        String winner = field.getWinningTeam();
+        if (!winner.equals("game in progress")){
+            endGame(winner);
         }
     }
 
