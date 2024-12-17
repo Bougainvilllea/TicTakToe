@@ -11,7 +11,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MenuController {
@@ -59,6 +61,10 @@ public class MenuController {
 
     }
 
+    @FXML
+    private TextField ipPort;
+
+
     private void loadGame(boolean isServer, Stage stage) throws IOException {
         FXMLLoader gameLoad = new FXMLLoader(getClass().getResource("field.fxml"));
         Scene gameScene = new Scene(gameLoad.load());
@@ -66,7 +72,7 @@ public class MenuController {
 
         GameController controller = gameLoad.getController();
         controller.setStage(stage);
-        controller.startOnlineGame(isServer);
+        controller.startOnlineGame(isServer, ipPort.getText());
         stage.setResizable(true);
     }
 

@@ -61,14 +61,16 @@ public class GameController {
 
     }
 
-    public void startOnlineGame(boolean isServer) throws IOException {
+    public void startOnlineGame(boolean isServer, String ipPortText) throws IOException {
+        String ip = ipPortText.split(":")[0];
+        String port = ipPortText.split(":")[1];
         if(isServer){
-            server = new Server(game, 60);
+            server = new Server(game, port, 60);
             game.setConnection(server);
             server.start();
         }
         else {
-            client = new Client(game, 60);
+            client = new Client(game, ip, port,60);
             game.setConnection(client);
             client.start();
         }

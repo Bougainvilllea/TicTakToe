@@ -6,27 +6,26 @@ import org.example.tictaktoe.GameUnits.Zero;
 import org.example.tictaktoe.MyThread;
 
 import java.io.*;
-import java.net.BindException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 public class Server extends Communicative{
-
-    public Server(Game game, double updateFrequency) {
+    String port;
+    public Server(Game game, String port, double updateFrequency) {
         super(game, updateFrequency);
+        this.port = port;
+
         System.out.println("Сервер создан!");
     }
 
     @Override
     public void start() throws IOException{ //ow
-        try{server = new ServerSocket(4004);}
+        try{server = new ServerSocket(Integer.parseInt(port), 50, InetAddress.getByName("0.0.0.0"));}
         catch (BindException e){
-            server = new ServerSocket(0);
+            server = new ServerSocket(0, 50, InetAddress.getByName("0.0.0.0"));
         }
         initThreads();
     }

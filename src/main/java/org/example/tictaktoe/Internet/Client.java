@@ -12,9 +12,13 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class Client extends Communicative{
+    String IpAddress;
+    String port;
 
-    public Client(Game game, double updateFrequency) {
+    public Client(Game game, String IpAddress, String port, double updateFrequency) {
         super(game, updateFrequency);
+        this.IpAddress = IpAddress;
+        this.port = port;
     }
 
     @Override
@@ -23,9 +27,8 @@ public class Client extends Communicative{
         System.out.println("Ожидаем подключение к серверу");
 
         while (true){
-            System.out.println("1");
             try {
-                clientSocket = new Socket("localhost", 4004);
+                clientSocket = new Socket(IpAddress, Integer.parseInt(port));
                 break;
             }
             catch (ConnectException | RuntimeException e) {
