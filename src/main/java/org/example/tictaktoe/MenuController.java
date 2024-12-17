@@ -3,6 +3,8 @@ package org.example.tictaktoe;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,13 +39,15 @@ public class MenuController {
     @FXML
     void createGameButtonController(ActionEvent event) throws IOException {
         if(event.getSource() == buttonCreateGame) {
-            createGame();
+            loadGame(true, stage);
         }
     }
 
     @FXML
-    void joinGameButtonController(ActionEvent event) {
-
+    void joinGameButtonController(ActionEvent event) throws IOException {
+        if(event.getSource() == buttonJoinGame) {
+            loadGame(false, stage);
+        }
     }
 
     @FXML
@@ -55,12 +59,17 @@ public class MenuController {
 
     }
 
-    private void createGame() throws IOException {
+    private void loadGame(boolean isServer, Stage stage) throws IOException {
         FXMLLoader gameLoad = new FXMLLoader(getClass().getResource("field.fxml"));
+        Scene gameScene = new Scene(gameLoad.load());
+        stage.setScene(gameScene);
 
-        Scene game = new Scene(gameLoad.load());
-        stage.setScene(game);
+        GameController controller = gameLoad.getController();
+        controller.setStage(stage);
+        controller.startOnlineGame(isServer);
+        stage.setResizable(true);
     }
+
 
     public void setStage(Stage stage) {
         this.stage = stage;

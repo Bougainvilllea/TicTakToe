@@ -6,8 +6,10 @@ import org.example.tictaktoe.GameUnits.Zero;
 import org.example.tictaktoe.MyThread;
 
 import java.io.*;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -22,21 +24,29 @@ public class Server extends Communicative{
 
     @Override
     public void start() throws IOException{ //ow
-        server = new ServerSocket(4004);
+        try{server = new ServerSocket(4004);}
+        catch (BindException e){
+            server = new ServerSocket(0);
+        }
         initThreads();
     }
 
     @Override
-    protected void createConnection(){
+    protected String createConnection(){
         System.out.println("Ожидаем подключение 2-го игрока");
+        game.setFieldText("Ожидаем подключение 2-го игрока");
         try {
             clientSocket = server.accept();
             in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
+            this.setState("connected");
+            game.setFieldText("2-ой игрок подключился!");
             System.out.println("2-ой игрок подключился!");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("сокет закрыт");
+            return "error";
         }
+        return "ok";
     }
 
     @Override
@@ -70,5 +80,32 @@ public class Server extends Communicative{
         startSettings.put("team", team);
         startSettings.put("yourTurn", yourTurn);
         return startSettings;
+    }
+
+    @Override
+    public void close(){
+        try {
+            if(mainThread != null && inputThread != null && outputThread != null) {
+                mainThread.interrupt();
+                inputThread.interrupt();
+                outputThread.interrupt();
+            }
+
+            if(server != null){
+                server.close();
+            }
+            if(clientSocket != null){
+                clientSocket.close();
+            }
+            if(in != null){
+                in.close();
+            }
+            if(out != null){
+                out.close();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

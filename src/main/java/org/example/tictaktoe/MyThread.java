@@ -31,10 +31,10 @@ public class MyThread extends Thread {
         while (true) {
             try {
                 Thread.sleep((int) Math.ceil(1000 / updateFrequency));
+                loopedRunnable.run();
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+                break;
             }
-            loopedRunnable.run();
         }
     }
 }

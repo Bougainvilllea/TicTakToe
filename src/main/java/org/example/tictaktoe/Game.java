@@ -1,13 +1,19 @@
 package org.example.tictaktoe;
 
 import javafx.application.Platform;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import org.example.tictaktoe.GameUnits.Cross;
 import org.example.tictaktoe.GameUnits.EmptyUnit;
 import org.example.tictaktoe.GameUnits.GameUnit;
 import org.example.tictaktoe.GameUnits.Zero;
+import org.example.tictaktoe.Internet.Client;
+import org.example.tictaktoe.Internet.Communicative;
+import org.example.tictaktoe.Internet.Server;
 import org.example.tictaktoe.Internet.Update;
 
 import java.util.List;
@@ -22,11 +28,12 @@ public class Game {
     private boolean yourTurn;
     public final Field field;
     public BlockingQueue<Update> updateQueue;
+    public Communicative connection;
 
-    public Game(AnchorPane mainPane, Pane fieldPane, String team){
+    public Game(AnchorPane mainPane, Pane fieldPane, Button fieldButton, Text fieldText, String team){
         this.mainPane = mainPane;
         this.team = team;
-        field = new Field(fieldPane, Color.BLACK, Color.BISQUE, 20);
+        field = new Field(fieldPane, fieldButton, fieldText, Color.BLACK, Color.BISQUE, 20);
         yourTurn = false;
         updateQueue = new LinkedBlockingQueue<>();
     }
@@ -47,10 +54,14 @@ public class Game {
         return null;
     }
 
+    public void setFieldText(String text){
+        field.fieldText.setText(text);
+    }
+
     public void clickOn(double x, double y){
         int cellNumToInsert = field.getNumCellContained(x, y);
         System.out.println(yourTurn);
-        if(cellNumToInsert != -1 && yourTurn){
+        if(cellNumToInsert != -1 && yourTurn && field.fieldCells.get(cellNumToInsert).name.equals("emptyUnit")){
             GameUnit unit = getUnitByTeam();
             field.insertGameUnit(cellNumToInsert, unit);
 
@@ -59,14 +70,22 @@ public class Game {
             yourTurn = false;
         }
     }
-    private void endGame(String winner){
-        System.out.println("Ending game: " + winner);
+
+    public void endGame(){
+        connection.close();
     }
 
-    private void endGameIfSomebodyWin(){
+    private void PrintIfSomebodyWin(){
         String winner = field.getWinningTeam();
+
         if (!winner.equals("game in progress")){
-            endGame(winner);
+            if(!winner.equals("draw")){
+                setFieldText("Победила команда: " + winner);
+            }
+            else {
+                setFieldText("Ничья!");
+            }
+            yourTurn = false;
         }
     }
 
@@ -85,11 +104,20 @@ public class Game {
                         if (h == 0) {
                             h = mainPane.getPrefHeight();
                         }
+                        if(connection.getState().equals("connected")){
+                            if(yourTurn) {
+                                setFieldText("Ваш ход!");
+                            }
+                            else{
+                                setFieldText("Ход противника");
+                            }
+                        }
+
 
                         field.resize(w, h * 0.8);
                         field.updateField();
 
-                        endGameIfSomebodyWin();
+                        PrintIfSomebodyWin();
                     }
                 };
 
@@ -113,5 +141,9 @@ public class Game {
 
     public void setTeam(String team){
         this.team = team;
+    }
+
+    public void setConnection(Communicative connection){
+        this.connection = connection;
     }
 }

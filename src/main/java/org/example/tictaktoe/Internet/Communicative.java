@@ -26,6 +26,7 @@ public class Communicative {
     protected MyThread outputThread;
     protected final BlockingQueue<Update> sendUpdateQueue = new LinkedBlockingQueue<Update>();
     protected final double updateFrequency;
+    private String state = "not connected";
 
     public Communicative(Game game, double updateFrequency) { //ow server
         this.game = game;
@@ -45,8 +46,8 @@ public class Communicative {
         return null;
     }
 
-    protected void createConnection() throws IOException {
-
+    protected String createConnection() throws IOException {
+        return "ok";
     }
 
     protected synchronized void setStartGameSettings() throws IOException, ClassNotFoundException { //ow
@@ -81,8 +82,11 @@ public class Communicative {
                     game.field.insertGameUnit((int) data.get("cellNumToInsert"), unit);
 
                 } else if (team.equals("zero")) {
+                    @SuppressWarnings("unchecked")
+                    List<Double> rgbBackGround = (List<Double>) data.get("backGroundColor");
+
                     Zero unit = new Zero(Color.color(rgb.getFirst(), rgb.get(1), rgb.getLast()), 100, 100,
-                            (double) data.get("thickness"), (Color) data.get("backGroundColor"));
+                            (double) data.get("thickness"), Color.color(rgbBackGround.getFirst(), rgbBackGround.get(1), rgbBackGround.getLast()));
                     game.field.insertGameUnit((int) data.get("cellNumToInsert"), unit);
                 }
                 game.setTurn(true);
@@ -99,7 +103,7 @@ public class Communicative {
                 try {
                     takeUpdates();
                 } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("inputThread: " + e.getMessage());
                 }
             }
 
@@ -113,7 +117,7 @@ public class Communicative {
                 try {
                     sendUpdates();
                 } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("outputThread: " + e.getMessage());
                 }
             }
         }
@@ -132,13 +136,13 @@ public class Communicative {
             public void run() {
                 System.out.println("Основной поток запущен!");
                 try {
-                    createConnection();
-                    createOutputThread();
-                    createInputThread();
-                    setStartGameSettings();
-                    outputThread.start();
-                    inputThread.start();
-
+                    if(createConnection().equals("ok")){
+                        createOutputThread();
+                        createInputThread();
+                        setStartGameSettings();
+                        outputThread.start();
+                        inputThread.start();
+                    };
 
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -160,5 +164,18 @@ public class Communicative {
 
     private void update() {
         takeUpdateQueueFromGame();
+    }
+
+
+    public void close() {
+        System.out.println("close");
+    }
+
+    public String getState(){
+        return state;
+    }
+
+    protected void setState(String state){
+        this.state = state;
     }
 }

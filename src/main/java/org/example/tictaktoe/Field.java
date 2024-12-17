@@ -1,10 +1,16 @@
 package org.example.tictaktoe;
 
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import org.example.tictaktoe.GameUnits.EmptyUnit;
 import org.example.tictaktoe.GameUnits.GameUnit;
 
@@ -13,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Field {
-    private final List<GameUnit> fieldCells = new ArrayList<>();
+    public final List<GameUnit> fieldCells = new ArrayList<>();
     private final HashMap<Integer, List<Double>> cellsCoordinates = new HashMap<>();
     private final Pane fieldPane;
     private final Color bordersColor;
@@ -29,9 +35,12 @@ public class Field {
 
     public double width;
     public double height;
+    public Label fieldLabel;
+    public Button fieldButton;
+    public Text fieldText;
 
 
-    public Field(Pane fieldPane, Color bordersColor, Color backGroundColor, double borderThickness){
+    public Field(Pane fieldPane, Button fieldButton, Text fieldText, Color bordersColor, Color backGroundColor, double borderThickness){
 
         for(int i = 0; i < 9; i++){
             fieldCells.add(new EmptyUnit());
@@ -39,6 +48,11 @@ public class Field {
 
         this.fieldPane = fieldPane;
         updateSizes();
+
+        this.fieldText = fieldText;
+        this.fieldText.setVisible(true);
+
+        this.fieldButton = fieldButton;
 
         this.canvas = new Canvas(getPaneWidth(), getPaneHeight());
         this.backGroundColor = backGroundColor;
@@ -58,6 +72,7 @@ public class Field {
         clearCanvas();
         drawBoard();
         drawUnits();
+        resizeAndMoveMenu();
     }
 
     public Integer getNumCellContained(double x, double y){
@@ -70,6 +85,7 @@ public class Field {
         }
         return -1;
     }
+
 
 
     public void resize(double w, double h){
@@ -213,6 +229,16 @@ public class Field {
             fittingUnits(fieldCells.get(i));
             fieldCells.get(i).render(coordinatesOnPane.getFirst(), coordinatesOnPane.getLast(), fieldPane);
         }
+    }
+
+    private void resizeAndMoveMenu(){
+        fieldText.setTextAlignment(TextAlignment.CENTER);
+        fieldText.setWrappingWidth(width);
+        fieldText.relocate(x, y + height + borderThickness);
+
+        fieldButton.setPrefSize(width * 0.3 + borderThickness/2, height * 0.05);
+        fieldButton.relocate((x + width/3), y + height + borderThickness*3);
+
     }
 
     private void fittingUnits(GameUnit unit){

@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class EmptyUnit extends GameUnit implements Serializable {
 
     public EmptyUnit(){
-        this.name = "gameUnit";
+        this.name = "emptyUnit";
     }
 
     @Override
