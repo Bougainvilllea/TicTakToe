@@ -39,14 +39,14 @@ public class MenuController {
     private Stage stage;
 
     @FXML
-    void createGameButtonController(ActionEvent event) throws IOException {
+    void createGameButtonController(ActionEvent event) throws Exception {
         if(event.getSource() == buttonCreateGame) {
             loadGame(true, stage);
         }
     }
 
     @FXML
-    void joinGameButtonController(ActionEvent event) throws IOException {
+    void joinGameButtonController(ActionEvent event) throws Exception {
         if(event.getSource() == buttonJoinGame) {
             loadGame(false, stage);
         }
@@ -65,7 +65,7 @@ public class MenuController {
     private TextField ipPort;
 
 
-    private void loadGame(boolean isServer, Stage stage) throws IOException {
+    private void loadGame(boolean isServer, Stage stage) throws Exception {
         FXMLLoader gameLoad = new FXMLLoader(getClass().getResource("field.fxml"));
         Scene gameScene = new Scene(gameLoad.load());
         stage.setScene(gameScene);

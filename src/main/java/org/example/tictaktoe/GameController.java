@@ -55,26 +55,46 @@ public class GameController {
 
 
     public void initialize() throws IOException {
-        game = new Game(mainPane, fieldPane, fieldButton, fieldText,"zero");
-        fieldPane.setOnMousePressed(this::MousePressed);
-        game.start();
 
     }
 
-    public void startOnlineGame(boolean isServer, String ipPortText) throws IOException {
-        String ip = ipPortText.split(":")[0];
-        String port = ipPortText.split(":")[1];
-        if(isServer){
-            server = new Server(game, port, 60);
-            game.setConnection(server);
-            server.start();
+    public void startOnlineGame(boolean isServer, String ipPortText) throws Exception {
+        boolean checkedAddress = false;
+        try {
+            String ip = ipPortText.split(":")[0];
+            String port = ipPortText.split(":")[1];
+            checkedAddress = true;
         }
-        else {
-            client = new Client(game, ip, port,60);
-            game.setConnection(client);
-            client.start();
+        catch (Exception e) {
+            checkedAddress = false;
+            System.out.println("Неверный ip или port");
+            loadMenu(stage);
         }
-        this.isServer = isServer;
+
+
+        if(checkedAddress){
+            String ip = ipPortText.split(":")[0];
+            String port = ipPortText.split(":")[1];
+
+            game = new Game(mainPane, fieldPane, fieldButton, fieldText,"zero");
+            fieldPane.setOnMousePressed(this::MousePressed);
+            game.start();
+
+            if(isServer){
+                server = new Server(game, port, 60);
+                game.setConnection(server);
+                server.start();
+            }
+            else {
+                client = new Client(game, ip, port,60);
+                game.setConnection(client);
+                client.start();
+            }
+            this.isServer = isServer;
+        }
+
+
+
     }
 
     private void MousePressed(MouseEvent event) {

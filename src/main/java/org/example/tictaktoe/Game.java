@@ -72,7 +72,10 @@ public class Game {
     }
 
     public void endGame(){
-        connection.close();
+        if(connection != null){
+            connection.close();
+        }
+        gameThread.interrupt();
     }
 
     private void PrintIfSomebodyWin(){
@@ -125,7 +128,7 @@ public class Game {
                     try {
                         Thread.sleep((int) Math.ceil(1000 / fps));
                     } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+
                     }
                     Platform.runLater(updater);
                 }
