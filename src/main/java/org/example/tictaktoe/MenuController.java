@@ -36,6 +36,11 @@ public class MenuController {
     @FXML
     private Label menuText;
 
+    @FXML
+    void leaveGame(ActionEvent event) {
+        System.out.println(1);
+    }
+
     private Stage stage;
 
     @FXML

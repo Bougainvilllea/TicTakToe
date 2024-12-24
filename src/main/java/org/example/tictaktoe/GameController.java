@@ -36,7 +36,6 @@ public class GameController {
     void leaveGame() throws Exception {
         game.endGame();
         loadMenu(stage);
-
     }
 
     public Field field;
