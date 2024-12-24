@@ -16,5 +16,6 @@
       </Label>
       <Button fx:id="buttonCreateGame" layoutX="202.0" layoutY="181.0" mnemonicParsing="false" onAction="#createGameButtonController" prefHeight="63.0" prefWidth="247.0" text="Create game" />
       <TextField fx:id="ipPort" layoutX="206.0" layoutY="347.0" prefHeight="25.0" prefWidth="241.0" promptText="ip:port" text="localhost:4004" />
+      <Button fx:id="myStatButton" layoutX="22.0" layoutY="379.0" mnemonicParsing="false" onAction="#myStatAction" prefHeight="25.0" prefWidth="77.0" text="my stat" />
    </children>
 </AnchorPane>

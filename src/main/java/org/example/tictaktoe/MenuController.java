@@ -37,8 +37,15 @@ public class MenuController {
     private Label menuText;
 
     @FXML
-    void leaveGame(ActionEvent event) {
-        System.out.println(1);
+    private Button myStatButton;
+
+    @FXML
+    void myStatAction(ActionEvent event) throws IOException {
+        FXMLLoader statLoad = new FXMLLoader(getClass().getResource("mystat.fxml"));
+        Scene stat = new Scene(statLoad.load());
+        stage.setScene(stat);
+        MyStatController statController = statLoad.getController();
+        statController.setStage(stage);
     }
 
     private Stage stage;

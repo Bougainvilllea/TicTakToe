@@ -109,7 +109,7 @@ public class Field {
     }
 
     public String getWinningTeam(){
-        for(int i = 1; i < 3; i++){
+        for(int i = 1; i <= 3; i++){
 
 //            horizontal
             if(fieldCells.get(coordinatesToNum(1, i)).getClass() != EmptyUnit.class){

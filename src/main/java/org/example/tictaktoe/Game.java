@@ -15,6 +15,7 @@ import org.example.tictaktoe.Internet.Client;
 import org.example.tictaktoe.Internet.Communicative;
 import org.example.tictaktoe.Internet.Server;
 import org.example.tictaktoe.Internet.Update;
+import java.time.LocalDate;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +77,9 @@ public class Game {
             connection.close();
         }
         gameThread.interrupt();
+        DatabaseMaster database = new DatabaseMaster("jdbc:sqlite:src/main/resources/org/example/tictaktoe/Database.db");
+        database.newStatRecord(field.getWinningTeam(), team, LocalDate.now().toString());
+
     }
 
     private void PrintIfSomebodyWin(){
